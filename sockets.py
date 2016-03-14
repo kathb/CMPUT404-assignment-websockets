@@ -71,7 +71,7 @@ class Client:
 
 
 def send_all_json(obj):
-    print("sending all json")
+    #print("sending all json")
     message = json.dumps(obj)
     for client in clients:
         client.put(message)
@@ -82,7 +82,7 @@ myWorld = World()
 def set_listener( entity, data ):
     ''' do something with the update ! '''
     #what is this
-    print("in set_listener")
+    #print("in set_listener")
     obj = dict()
     obj[entity] = data
     message = json.dumps(obj)
@@ -105,7 +105,7 @@ def read_ws(ws,client):
             print "WS RECV: %s" % msg
             if (msg is not None):
                 packet = json.loads(msg)
-                print("packet in read_ws: %s"%packet)
+                #print("packet in read_ws: %s"%packet)
                 for key, value in packet.iteritems():
                     #should this be calling set_listener??
                     myWorld.set(key, value)

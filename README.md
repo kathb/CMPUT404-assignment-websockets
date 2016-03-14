@@ -19,7 +19,7 @@ pip install gunicorn
 Contributors / Licensing
 ========================
 
-Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle.
+Generally everything is LICENSE'D under the Apache 2 license by Abram Hindle and Kathleen Baker.
 
 freetests.py is LICENSE'D under a BSD-like license:
 
@@ -57,3 +57,13 @@ Contributors
 
 * Mark Galloway
 * Abram Hindle
+
+Resources
+=========
+
+Parts of sockets.py was adapted from Abram Hindle's chat.py, found March 13, 2016 
+at: https://github.com/abramhindle/WebSocketsExamples
+
+Copyright 2014 Abram Hindle, Apache 2 Licensed
+
+Consulted with Brandon Smolley and Kieran Boyle

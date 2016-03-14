@@ -25,7 +25,7 @@ freetests.py is LICENSE'D under a BSD-like license:
 
 From ws4py
 
-Copyright (c) 2011-2014, Sylvain Hellegouarch, Abram Hindle
+Copyright (c) 2011-2014, Sylvain Hellegouarch, Abram Hindle, Kathleen Baker
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -57,13 +57,13 @@ Contributors
 
 * Mark Galloway
 * Abram Hindle
+* Kathleen Baker
 
 Resources
 =========
 
 Parts of sockets.py was adapted from Abram Hindle's chat.py, found March 13, 2016 
 at: https://github.com/abramhindle/WebSocketsExamples
-
 Copyright 2014 Abram Hindle, Apache 2 Licensed
 
-Consulted with Brandon Smolley and Kieran Boyle
+I consulted with Brandon Smolley and Kieran Boyle

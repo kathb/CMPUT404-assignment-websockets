@@ -59,29 +59,79 @@ class World:
     def world(self):
         return self.space
 
-myWorld = World()        
+class Client:
+    def __init__(self):
+        self.queue = queue.Queue()
+
+    def put(self, v):
+        self.queue.put_nowait(v)
+
+    def get(self):
+        return self.queue.get()
+
+
+def send_all_json(obj):
+    print("sending all json")
+    message = json.dumps(obj)
+    for client in clients:
+        client.put(message)
+
+clients = list()
+myWorld = World()       
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
+    #what is this
+    print("in set_listener")
+    obj = dict()
+    obj[entity] = data
+    message = json.dumps(obj)
+    for client in clients:
+        client.put(message)
 
 myWorld.add_set_listener( set_listener )
         
 @app.route('/')
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return flask.redirect("/static/index.html")
 
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
-    return None
+    try:
+        while True:
+            msg = ws.receive()
+            print "WS RECV: %s" % msg
+            if (msg is not None):
+                packet = json.loads(msg)
+                print("packet in read_ws: %s"%packet)
+                for key, value in packet.iteritems():
+                    #should this be calling set_listener??
+                    myWorld.set(key, value)
+            else:
+                break
+    except:
+        '''Done'''
 
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
     # XXX: TODO IMPLEMENT ME
-    return None
+    client = Client()
+    clients.append(client)
+    g = gevent.spawn( read_ws, ws, client )    
+    try:
+        while True:
+            # block here
+            msg = client.get()
+            ws.send(msg)
+    except Exception as e:# WebSocketError as e:
+        print "WS Error %s" % e
+    finally:
+        clients.remove(client)
+        gevent.kill(g)
 
 
 def flask_post_json():
@@ -96,24 +146,37 @@ def flask_post_json():
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
-    '''update the entities via this interface'''
-    return None
+    data = flask_post_json()
+    #print("data %s"%data)
+    result = None
+    if request.method == 'PUT':
+        myWorld.set(entity, data)
+        result = myWorld.get(entity)
+    elif request.method == 'POST':
+        '''update an entry'''
+        for key, value in data.iteritems():
+            myWorld.update(entity,key,value)
+        result = myWorld.get(entity)
+    return flask.jsonify(result)
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    return flask.jsonify(myWorld.world())
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    data = myWorld.get(entity)
+    jsondata = json.dumps(data)
+    return flask.jsonify(data)
 
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+    myWorld.clear()
+    return flask.jsonify(myWorld.world())
 
 
 
